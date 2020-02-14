@@ -40,16 +40,21 @@ export class ChannelService {
   }
 
   public streamCommandStartStop(execution: CommandExecution) {
-    this.channel.append(nls.localize('channel_starting_message'));
+    this.streamCommandStart(
+      execution.command.toString(),
+      execution.command.toCommand()
+    );
+    /* this.channel.append(nls.localize('channel_starting_message'));
     this.channel.appendLine(execution.command.toString());
     this.channel.appendLine('');
 
     this.channel.appendLine(
       this.getExecutionTime() + ' ' + execution.command.toCommand()
-    );
+    ); */
 
     execution.processExitSubject.subscribe(data => {
-      this.channel.append(
+      this.streamCommandExitStop(data, execution.command.toCommand());
+      /*this.channel.append(
         this.getExecutionTime() + ' ' + execution.command.toCommand()
       );
       this.channel.append(' ');
@@ -60,7 +65,7 @@ export class ChannelService {
       } else {
         this.channel.appendLine(nls.localize('channel_end'));
       }
-      this.channel.appendLine('');
+      this.channel.appendLine(''); */
     });
 
     execution.processErrorSubject.subscribe(data => {
@@ -83,6 +88,30 @@ export class ChannelService {
       }
       this.channel.appendLine('');
     });
+  }
+
+  public streamCommandStart(commandDescription: string, commandName: string) {
+    this.channel.append(nls.localize('channel_starting_message'));
+    this.channel.appendLine(commandDescription);
+    this.channel.appendLine('');
+
+    this.channel.appendLine(this.getExecutionTime() + ' ' + commandName);
+  }
+
+  public streamCommandExitStop(
+    exitCode: number | undefined,
+    commandName: string
+  ) {
+    this.channel.append(this.getExecutionTime() + ' ' + commandName);
+    this.channel.append(' ');
+    if (exitCode !== undefined && exitCode !== null) {
+      this.channel.appendLine(
+        nls.localize('channel_end_with_exit_code', exitCode.toString())
+      );
+    } else {
+      this.channel.appendLine(nls.localize('channel_end'));
+    }
+    this.channel.appendLine('');
   }
 
   private getExecutionTime() {
