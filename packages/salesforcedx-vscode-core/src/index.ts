@@ -591,11 +591,12 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 function extensionUpdate(context: vscode.ExtensionContext): boolean {
-  const extVersion = require(context.asAbsolutePath('./package.json')).version;
+  const extVersion = require(context.asAbsolutePath('./package.json'))
+    .version as number;
   console.log('ext version' + extVersion);
-  const previousVersion = context.globalState.get('EXT_VERSION');
+  const previousVersion = context.globalState.get('EXT_VERSION') as number;
   console.log('previous version' + previousVersion);
-  if (previousVersion !== extVersion) {
+  if (isNullOrUndefined(previousVersion) || previousVersion < extVersion) {
     context.globalState.update('EXT_VERSION', extVersion);
     return true;
   }
