@@ -41,6 +41,25 @@ export abstract class LibraryCommandletExecutor<T>
     this.orgConnection = await OrgAuthInfo.getConnection(usernameOrAlias);
   }
 
+  public genericBuild(execName: string, telemetryLogName: string): void {
+    this.executionName = execName;
+    this.telemetryName = telemetryLogName;
+  }
+
+  public genericWrapper(fn: (one: string) => string) {
+    const commandName = this.executionName;
+
+    return function(one: string): string {
+      channelService.showCommandWithTimestamp(`Starting ${commandName}`);
+      // @ts-ignore
+      const result = fn.call(this, one) as string;
+
+      channelService.appendLine(result);
+      channelService.showCommandWithTimestamp(`Finished ${commandName}`);
+      return result;
+    };
+  }
+
   public deployWrapper(fn: (...args: any[]) => Promise<ToolingDeployResult>) {
     const commandName = this.executionName;
 

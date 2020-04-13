@@ -7,6 +7,7 @@
 import * as vscode from 'vscode';
 import { channelService } from './channels';
 import {
+  createProjectManifest,
   forceAliasList,
   forceAnalyticsTemplateCreate,
   forceApexClassCreate,
@@ -87,6 +88,10 @@ function registerCommands(
   extensionContext: vscode.ExtensionContext
 ): vscode.Disposable {
   // Customer-facing commands
+  const createProjectManifestCmd = vscode.commands.registerCommand(
+    'sfdx.force.create.project.manifest',
+    createProjectManifest
+  );
   const forceAuthWebLoginCmd = vscode.commands.registerCommand(
     'sfdx.force.auth.web.login',
     forceAuthWebLogin
@@ -313,6 +318,7 @@ function registerCommands(
   );
 
   return vscode.Disposable.from(
+    createProjectManifestCmd,
     forceApexExecuteDocumentCmd,
     forceApexExecuteSelectionCmd,
     forceApexTestRunCmd,

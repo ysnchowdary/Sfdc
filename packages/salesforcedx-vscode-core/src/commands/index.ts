@@ -72,3 +72,5 @@ export {
   ForceSourceDiffExecutor,
   handleDiffResponse
 } from './forceSourceDiff';
+
+export { createProjectManifest } from './createProjectManifest';
